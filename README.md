@@ -1,1 +1,16 @@
 # gpu-operator
+
+https://artifacthub.io/packages/helm/gpu-operator/gpu-operator
+
+Add the `gpu-operator` repo:
+```bash
+helm repo add gpu-operator https://helm.ngc.nvidia.com/nvidia
+```
+
+Deploy `gpu-operator`:
+```bash
+helm upgrade -i gpu-operator gpu-operator/gpu-operator
+  --namespace gpu-operator \
+  --create-namespace
+```
+
