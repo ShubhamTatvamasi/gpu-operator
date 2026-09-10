@@ -9,7 +9,7 @@ helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
 
 Deploy `gpu-operator`:
 ```bash
-helm upgrade -i gpu-operator nvidia/gpu-operator
+helm upgrade -i gpu-operator nvidia/gpu-operator \
   --namespace gpu-operator \
   --create-namespace
 ```
