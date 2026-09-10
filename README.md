@@ -2,7 +2,7 @@
 
 https://artifacthub.io/packages/helm/gpu-operator/gpu-operator
 
-Add the `gpu-operator` repo:
+Add the `nvidia` repo:
 ```bash
 helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
 ```
