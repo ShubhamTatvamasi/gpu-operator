@@ -21,6 +21,11 @@ helm get values gpu-operator -n gpu-operator
 
 ---
 
+List GPU Nodes:
+```bash
+kubectl get nodes -l nvidia.com/gpu.present=true
+```
+
 ```
 kubectl apply -f - << EOF
 apiVersion: v1
