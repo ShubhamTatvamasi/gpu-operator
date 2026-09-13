@@ -14,6 +14,11 @@ helm upgrade -i gpu-operator nvidia/gpu-operator \
   --create-namespace
 ```
 
+Check the values:
+```bash
+helm get values gpu-operator -n gpu-operator
+```
+
 ---
 
 ```
