@@ -14,3 +14,24 @@ helm upgrade -i gpu-operator nvidia/gpu-operator \
   --create-namespace
 ```
 
+---
+
+```
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gpu-pod
+spec:
+  containers:
+    - name: ai-workload
+      image: quay.io/jupyter/tensorflow-notebook:cuda-latest
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+      command:
+        - sleep
+        - infinity
+EOF
+```
+
