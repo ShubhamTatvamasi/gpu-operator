@@ -35,3 +35,7 @@ spec:
 EOF
 ```
 
+Check nvidia status:
+```bash
+kubectl exec -it gpu-pod -- nvidia-smi
+```
