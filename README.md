@@ -53,6 +53,11 @@ kubectl exec -it gpu-pod -- nvidia-smi
 ---
 
 Check status of your GPU Nodes:
+
+```bash
+kubectl get clusterpolicy cluster-policy
+```
+
 ```bash
 kubectl describe clusterpolicy cluster-policy
 ```
