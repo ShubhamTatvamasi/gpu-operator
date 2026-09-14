@@ -37,6 +37,26 @@ kubectl apply -f - << EOF
 apiVersion: v1
 kind: Pod
 metadata:
+  name: gpu-test
+spec:
+  restartPolicy: Never
+  containers:
+  - name: gpu-test
+    image: nvidia/cuda:13.0.0-base-ubuntu24.04
+    command: ["nvidia-smi"]
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+EOF
+```
+
+---
+
+```
+kubectl apply -f - << EOF
+apiVersion: v1
+kind: Pod
+metadata:
   name: gpu-pod
 spec:
   containers:
