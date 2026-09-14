@@ -1,5 +1,7 @@
 # gpu-operator
 
+https://catalog.ngc.nvidia.com/
+
 https://artifacthub.io/packages/helm/gpu-operator/gpu-operator
 
 Add the `nvidia` repo:
