@@ -19,6 +19,7 @@ helm upgrade -i fake-gpu-operator \
 
 Deploy a Test Workload:
 ```yaml
+kubectl apply -f - << EOF
 apiVersion: v1
 kind: Pod
 metadata:
@@ -30,4 +31,5 @@ spec:
     resources:
       limits:
         nvidia.com/gpu: 1
+EOF
 ```
