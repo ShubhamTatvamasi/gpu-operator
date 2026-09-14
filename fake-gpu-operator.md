@@ -1,5 +1,7 @@
 # fake-gpu-operator
 
+https://github.com/run-ai/fake-gpu-operator
+
 Deploy `fake-gpu-operator`:
 ```bash
 helm upgrade -i fake-gpu-operator \
