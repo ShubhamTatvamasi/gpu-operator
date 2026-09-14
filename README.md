@@ -26,6 +26,12 @@ List GPU Nodes:
 kubectl get nodes -l nvidia.com/gpu.present=true
 ```
 
+Get details of GPUs:
+```bash
+kubectl get nodes -l nvidia.com/gpu.present=true \
+  -L nvidia.com/gpu.product,nvidia.com/gpu.count,nvidia.com/cuda.driver-version.full
+```
+
 ```
 kubectl apply -f - << EOF
 apiVersion: v1
