@@ -27,7 +27,7 @@ metadata:
 spec:
   containers:
   - name: gpu-container
-    image: nvcr.io/nvidia/k8s/cuda-sample:vectoradd-cuda12.5.0-ubi8
+    image: registry.k8s.io/cuda-vector-add:v0.1
     resources:
       limits:
         nvidia.com/gpu: 1
