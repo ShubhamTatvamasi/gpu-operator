@@ -16,3 +16,18 @@ helm upgrade -i fake-gpu-operator \
   --namespace gpu-operator \
   --create-namespace
 ```
+
+Deploy a Test Workload:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gpu-pod
+spec:
+  containers:
+  - name: gpu-container
+    image: nvidia/cuda-vector-add:v0.1
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+```
