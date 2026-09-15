@@ -44,7 +44,7 @@ spec:
   restartPolicy: Never
   containers:
   - name: gpu-test
-    image: nvidia/cuda:13.3.1-base-ubuntu24.04
+    image: nvidia/cuda:13.3.1-base-ubuntu26.04
     command: ["nvidia-smi"]
     resources:
       limits:
