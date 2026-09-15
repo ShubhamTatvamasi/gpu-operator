@@ -52,6 +52,10 @@ spec:
 EOF
 ```
 
+```
+kubectl logs gpu-test
+```
+
 ---
 
 ```
