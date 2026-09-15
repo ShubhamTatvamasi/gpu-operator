@@ -34,6 +34,8 @@ kubectl get nodes -l nvidia.com/gpu.present=true \
   -o custom-columns='NODE:.metadata.name,GPU:.metadata.labels.nvidia\.com/gpu\.product,COUNT:.metadata.labels.nvidia\.com/gpu\.count,DRIVER:.metadata.labels.nvidia\.com/cuda\.driver-version\.full,CUDA:.metadata.labels.nvidia\.com/cuda\.runtime-version\.full,MIG:.metadata.labels.nvidia\.com/mig\.capable'
 ```
 
+---
+
 ```
 kubectl apply -f - << EOF
 apiVersion: v1
