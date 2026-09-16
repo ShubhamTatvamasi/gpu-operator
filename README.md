@@ -31,7 +31,7 @@ kubectl get nodes -l nvidia.com/gpu.present=true
 Get details of GPUs:
 ```bash
 kubectl get nodes -l nvidia.com/gpu.present=true \
-  -o custom-columns='NODE:.metadata.name,GPU:.metadata.labels.nvidia\.com/gpu\.product,COUNT:.metadata.labels.nvidia\.com/gpu\.count,DRIVER:.metadata.labels.nvidia\.com/cuda\.driver-version\.full,CUDA:.metadata.labels.nvidia\.com/cuda\.runtime-version\.full,MIG:.metadata.labels.nvidia\.com/mig\.capable'
+  -o custom-columns='NODE:.metadata.name,GPU:.metadata.labels.nvidia\.com/gpu\.product,GPUS:.status.allocatable.nvidia\.com/gpu,MEM/GPU-MB:.metadata.labels.nvidia\.com/gpu\.memory,COMPUTE:.metadata.labels.nvidia\.com/gpu\.compute\.major,DRIVER:.metadata.labels.nvidia\.com/cuda\.driver-version\.full,CUDA:.metadata.labels.nvidia\.com/cuda\.runtime-version\.full,MIG:.metadata.labels.nvidia\.com/mig\.capable,MPS:.metadata.labels.nvidia\.com/mps\.capable,SHARING:.metadata.labels.nvidia\.com/gpu\.sharing-strategy,MODE:.metadata.labels.nvidia\.com/gpu\.mode'
 ```
 
 ---
