@@ -58,6 +58,10 @@ EOF
 kubectl logs gpu-test
 ```
 
+```
+kubectl delete pod gpu-test
+```
+
 ---
 
 ```
