@@ -275,14 +275,28 @@ done < <(
 
 section "GPU POD ALLOCATION"
 
-printf '%-38s %-55s %-32s %-5s\n' \
+printf '%-30s %-45s %-28s %-20s %-5s\n' \
     "NAMESPACE" \
     "POD" \
     "NODE" \
+    "GPU MODEL" \
     "GPU"
 
 printf '%s\n' \
     '────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────'
+
+NODE_GPU_MODELS_JSON="$(
+    jq '
+        [
+            .items[]
+            | {
+                key: .metadata.name,
+                value: (.metadata.labels["nvidia.com/gpu.product"] // "unknown")
+            }
+        ]
+        | from_entries
+    ' <<< "$NODES_JSON"
+)"
 
 jq -r '
     .items[]
@@ -305,14 +319,19 @@ jq -r '
 ' <<< "$PODS_JSON" |
 while IFS=$'\t' read -r namespace pod node gpu; do
 
-    if (( ${#pod} > 55 )); then
-        pod="${pod:0:52}..."
+    if (( ${#pod} > 45 )); then
+        pod="${pod:0:42}..."
     fi
 
-    printf '%-38s %-55s %-32s %-5s\n' \
+    gpu_model="$(
+        jq -r --arg node "$node" '.[$node] // "unknown"' <<< "$NODE_GPU_MODELS_JSON"
+    )"
+
+    printf '%-30s %-45s %-28s %-20s %-5s\n' \
         "$namespace" \
         "$pod" \
         "$node" \
+        "$gpu_model" \
         "$gpu"
 
 done
