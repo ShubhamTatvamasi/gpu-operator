@@ -36,57 +36,7 @@ kubectl get nodes -l nvidia.com/gpu.present=true \
 
 ---
 
-```
-kubectl apply -f - << EOF
-apiVersion: v1
-kind: Pod
-metadata:
-  name: gpu-test
-spec:
-  restartPolicy: Never
-  containers:
-  - name: gpu-test
-    image: nvidia/cuda:13.3.1-base-ubuntu26.04
-    command: ["nvidia-smi"]
-    resources:
-      limits:
-        nvidia.com/gpu: 1
-EOF
-```
-
-```
-kubectl logs gpu-test
-```
-
-```
-kubectl delete pod gpu-test
-```
-
----
-
-```
-kubectl apply -f - << EOF
-apiVersion: v1
-kind: Pod
-metadata:
-  name: gpu-pod
-spec:
-  containers:
-    - name: ai-workload
-      image: quay.io/jupyter/tensorflow-notebook:cuda-latest
-      resources:
-        limits:
-          nvidia.com/gpu: 1
-      command:
-        - sleep
-        - infinity
-EOF
-```
-
-Check nvidia status:
-```bash
-kubectl exec -it gpu-pod -- nvidia-smi
-```
+See [nvidia-smi.md](nvidia-smi.md) for test pods that run `nvidia-smi`.
 
 ---
 
