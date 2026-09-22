@@ -1,7 +1,7 @@
 # nvidia-smi
 
 Deploy a pod requesting 1 GPU and keep it running so you can exec into it and
-run `nvidia-smi` interactively (repeated checks, `nvidia-smi -l`, etc.):
+run `nvidia-smi` interactively (repeated checks, `nvidia-smi -debug`, etc.):
 
 ```
 kubectl apply -f - << EOF
