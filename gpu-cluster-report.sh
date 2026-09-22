@@ -203,25 +203,34 @@ printf '  %-25s : %s GPUs\n' "NVIDIA RTX A4500" "$A4500_GPUS"
 
 section "GPU NODE STATUS"
 
-printf '%-32s %-20s %-12s %-12s %-12s %-10s %-10s\n' \
+printf '%-32s %-20s %-12s %-12s %-8s %-10s %-10s %-6s %-6s %-10s %-8s\n' \
     "NODE" \
     "GPU MODEL" \
     "ALLOCATED" \
     "MEMORY/GPU" \
+    "COMPUTE" \
     "DRIVER" \
     "CUDA" \
+    "MIG" \
+    "MPS" \
+    "SHARING" \
     "MODE"
 
 printf '%s\n' \
-    '────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────'
+    '────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────'
 
 while IFS=$'\t' read -r \
     node \
     model \
     total \
     memory \
+    compute_major \
+    compute_minor \
     driver \
     cuda \
+    mig \
+    mps \
+    sharing \
     mode; do
 
     allocated="$(
@@ -244,13 +253,19 @@ while IFS=$'\t' read -r \
         awk "BEGIN {printf \"%.1f GiB\", $memory / 1024}"
     )"
 
-    printf '%-32s %-20s %-12s %-12s %-12s %-10s %-10s\n' \
+    compute="${compute_major}.${compute_minor}"
+
+    printf '%-32s %-20s %-12s %-12s %-8s %-10s %-10s %-6s %-6s %-10s %-8s\n' \
         "$node" \
         "$model" \
         "${allocated}/${total}" \
         "$memory_gib" \
+        "$compute" \
         "$driver" \
         "$cuda" \
+        "$mig" \
+        "$mps" \
+        "$sharing" \
         "$mode"
 
 done < <(
@@ -261,8 +276,13 @@ done < <(
             .metadata.labels["nvidia.com/gpu.product"],
             (.status.allocatable["nvidia.com/gpu"] | tonumber),
             (.metadata.labels["nvidia.com/gpu.memory"] | tonumber),
+            .metadata.labels["nvidia.com/gpu.compute.major"],
+            .metadata.labels["nvidia.com/gpu.compute.minor"],
             .metadata.labels["nvidia.com/cuda.driver-version.full"],
             .metadata.labels["nvidia.com/cuda.runtime-version.full"],
+            (.metadata.labels["nvidia.com/mig.capable"] // "false"),
+            (.metadata.labels["nvidia.com/mps.capable"] // "false"),
+            (.metadata.labels["nvidia.com/gpu.sharing-strategy"] // "none"),
             .metadata.labels["nvidia.com/gpu.mode"]
         ]
         | @tsv
