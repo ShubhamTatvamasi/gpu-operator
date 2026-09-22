@@ -151,29 +151,26 @@ fi
 # GPU Model Totals
 # ==============================================================================
 
-T4_GPUS="$(
-    jq '
-        [
-            .items[]
-            | select(.metadata.labels["nvidia.com/gpu.product"] == "Tesla-T4")
-            | .status.allocatable["nvidia.com/gpu"]
-            | tonumber
-        ]
-        | add // 0
+GPU_MODELS="$(
+    jq -r '
+        [.items[].metadata.labels["nvidia.com/gpu.product"] // "unknown"]
+        | unique[]
     ' <<< "$NODES_JSON"
 )"
 
-A4500_GPUS="$(
-    jq '
+gpu_count_for_model() {
+    local model="$1"
+
+    jq --arg model "$model" '
         [
             .items[]
-            | select(.metadata.labels["nvidia.com/gpu.product"] == "NVIDIA-RTX-A4500")
+            | select((.metadata.labels["nvidia.com/gpu.product"] // "unknown") == $model)
             | .status.allocatable["nvidia.com/gpu"]
             | tonumber
         ]
         | add // 0
     ' <<< "$NODES_JSON"
-)"
+}
 
 # ==============================================================================
 # Header
@@ -194,8 +191,11 @@ printf '  %-25s : %s\n' "Total GPUs" "$TOTAL_GPUS"
 printf '  %-25s : %s\n' "Allocated GPUs" "$ALLOCATED_GPUS"
 printf '  %-25s : %s\n' "Available GPUs" "$AVAILABLE_GPUS"
 printf '  %-25s : %s%%\n' "GPU Allocation" "$ALLOCATION_PERCENT"
-printf '  %-25s : %s GPUs\n' "Tesla T4" "$T4_GPUS"
-printf '  %-25s : %s GPUs\n' "NVIDIA RTX A4500" "$A4500_GPUS"
+
+while IFS= read -r model; do
+    model_gpus="$(gpu_count_for_model "$model")"
+    printf '  %-25s : %s GPUs\n' "$model" "$model_gpus"
+done <<< "$GPU_MODELS"
 
 # ==============================================================================
 # GPU Node Status
@@ -273,17 +273,17 @@ done < <(
         .items[]
         | [
             .metadata.name,
-            .metadata.labels["nvidia.com/gpu.product"],
+            (.metadata.labels["nvidia.com/gpu.product"] // "unknown"),
             (.status.allocatable["nvidia.com/gpu"] | tonumber),
             (.metadata.labels["nvidia.com/gpu.memory"] | tonumber),
-            .metadata.labels["nvidia.com/gpu.compute.major"],
-            .metadata.labels["nvidia.com/gpu.compute.minor"],
-            .metadata.labels["nvidia.com/cuda.driver-version.full"],
-            .metadata.labels["nvidia.com/cuda.runtime-version.full"],
+            (.metadata.labels["nvidia.com/gpu.compute.major"] // "?"),
+            (.metadata.labels["nvidia.com/gpu.compute.minor"] // "?"),
+            (.metadata.labels["nvidia.com/cuda.driver-version.full"] // "?"),
+            (.metadata.labels["nvidia.com/cuda.runtime-version.full"] // "?"),
             (.metadata.labels["nvidia.com/mig.capable"] // "false"),
             (.metadata.labels["nvidia.com/mps.capable"] // "false"),
             (.metadata.labels["nvidia.com/gpu.sharing-strategy"] // "none"),
-            .metadata.labels["nvidia.com/gpu.mode"]
+            (.metadata.labels["nvidia.com/gpu.mode"] // "?")
         ]
         | @tsv
     ' <<< "$NODES_JSON"
@@ -402,7 +402,7 @@ calculate_model_allocation() {
     done < <(
         jq -r --arg model "$model" '
             .items[]
-            | select(.metadata.labels["nvidia.com/gpu.product"] == $model)
+            | select((.metadata.labels["nvidia.com/gpu.product"] // "unknown") == $model)
             | .metadata.name
         ' <<< "$NODES_JSON"
     )
@@ -410,71 +410,39 @@ calculate_model_allocation() {
     echo "$total"
 }
 
-# ------------------------------------------------------------------------------
-# Tesla T4
-# ------------------------------------------------------------------------------
+while IFS= read -r model; do
 
-T4_NODES="$(
-    jq '
-        [
-            .items[]
-            | select(.metadata.labels["nvidia.com/gpu.product"] == "Tesla-T4")
-        ]
-        | length
-    ' <<< "$NODES_JSON"
-)"
-
-T4_ALLOCATED="$(calculate_model_allocation "Tesla-T4")"
-T4_AVAILABLE=$((T4_GPUS - T4_ALLOCATED))
-
-if (( T4_GPUS > 0 )); then
-    T4_PERCENT="$(
-        awk "BEGIN {printf \"%.1f\", ($T4_ALLOCATED / $T4_GPUS) * 100}"
+    model_nodes="$(
+        jq --arg model "$model" '
+            [
+                .items[]
+                | select((.metadata.labels["nvidia.com/gpu.product"] // "unknown") == $model)
+            ]
+            | length
+        ' <<< "$NODES_JSON"
     )"
-else
-    T4_PERCENT="0.0"
-fi
 
-printf '%-25s %-10s %-10s %-12s %-12s %-12s\n' \
-    "Tesla T4" \
-    "$T4_NODES" \
-    "$T4_GPUS" \
-    "$T4_ALLOCATED" \
-    "$T4_AVAILABLE" \
-    "${T4_PERCENT}%"
+    model_gpus="$(gpu_count_for_model "$model")"
+    model_allocated="$(calculate_model_allocation "$model")"
+    model_available=$((model_gpus - model_allocated))
 
-# ------------------------------------------------------------------------------
-# RTX A4500
-# ------------------------------------------------------------------------------
+    if (( model_gpus > 0 )); then
+        model_percent="$(
+            awk "BEGIN {printf \"%.1f\", ($model_allocated / $model_gpus) * 100}"
+        )"
+    else
+        model_percent="0.0"
+    fi
 
-A4500_NODES="$(
-    jq '
-        [
-            .items[]
-            | select(.metadata.labels["nvidia.com/gpu.product"] == "NVIDIA-RTX-A4500")
-        ]
-        | length
-    ' <<< "$NODES_JSON"
-)"
+    printf '%-25s %-10s %-10s %-12s %-12s %-12s\n' \
+        "$model" \
+        "$model_nodes" \
+        "$model_gpus" \
+        "$model_allocated" \
+        "$model_available" \
+        "${model_percent}%"
 
-A4500_ALLOCATED="$(calculate_model_allocation "NVIDIA-RTX-A4500")"
-A4500_AVAILABLE=$((A4500_GPUS - A4500_ALLOCATED))
-
-if (( A4500_GPUS > 0 )); then
-    A4500_PERCENT="$(
-        awk "BEGIN {printf \"%.1f\", ($A4500_ALLOCATED / $A4500_GPUS) * 100}"
-    )"
-else
-    A4500_PERCENT="0.0"
-fi
-
-printf '%-25s %-10s %-10s %-12s %-12s %-12s\n' \
-    "RTX A4500" \
-    "$A4500_NODES" \
-    "$A4500_GPUS" \
-    "$A4500_ALLOCATED" \
-    "$A4500_AVAILABLE" \
-    "${A4500_PERCENT}%"
+done <<< "$GPU_MODELS"
 
 printf '%s\n' \
     '────────────────────────────────────────────────────────────────────────────────────'
