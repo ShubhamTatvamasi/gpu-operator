@@ -50,5 +50,4 @@ for n in $(kubectl get nodes -o name); do
   echo "$n $patch"
   kubectl patch $n --subresource=status --type=merge -p "$patch"
 done
-
 ```
