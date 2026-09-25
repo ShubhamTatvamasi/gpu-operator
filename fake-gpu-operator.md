@@ -28,14 +28,27 @@ helm un fake-gpu-operator -n gpu-operator
 
 Remove labels from nodes:
 ```bash
-for node in 10.10.153.255 10.10.169.182 10.10.204.94; do
-  kubectl label node "$node" \
-    run.ai/simulated-gpu-node-pool- \
-    nvidia.com/gpu.count- \
-    nvidia.com/gpu.memory- \
-    nvidia.com/gpu.present- \
-    nvidia.com/gpu.product- \
-    nvidia.com/mig.strategy- \
-    run.ai/fake.gpu-
+for n in $(kubectl get nodes -o name); do
+  labels=$(kubectl get $n -o json | jq -r '
+    .metadata.labels | keys[]
+    | select(startswith("nvidia.com/") or startswith("run.ai/"))
+    | . + "-"')
+  [ -z "$labels" ] && continue
+  echo "$n: $(echo $labels)"
+  kubectl label $n $(echo $labels)
 done
+```
+
+Remove capacity and allocatable status:
+```bash
+for n in $(kubectl get nodes -o name); do
+  patch=$(kubectl get $n -o json | jq -c '
+    [.status.capacity, .status.allocatable]
+    | map(keys[]) | unique | map(select(startswith("nvidia.com/")))
+    | map({(.): null}) | add // {}
+    | {status: {capacity: ., allocatable: .}}')
+  echo "$n $patch"
+  kubectl patch $n --subresource=status --type=merge -p "$patch"
+done
+
 ```
