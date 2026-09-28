@@ -2,13 +2,6 @@
 
 https://github.com/run-ai/fake-gpu-operator
 
-Add labels to nodes:
-```bash
-kubectl label node 10.10.153.255 run.ai/simulated-gpu-node-pool=default
-kubectl label node 10.10.169.182 run.ai/simulated-gpu-node-pool=default
-kubectl label node 10.10.204.94 run.ai/simulated-gpu-node-pool=default
-```
-
 Deploy `fake-gpu-operator`:
 ```bash
 helm upgrade -i fake-gpu-operator \
@@ -16,6 +9,11 @@ helm upgrade -i fake-gpu-operator \
   --namespace gpu-operator \
   --create-namespace \
   --set runtimeClass.enabled=false
+```
+
+Add labels to nodes:
+```bash
+kubectl label node 10.10.178.133 run.ai/simulated-gpu-node-pool=default
 ```
 
 ---
