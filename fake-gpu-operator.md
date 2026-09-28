@@ -14,7 +14,8 @@ Deploy `fake-gpu-operator`:
 helm upgrade -i fake-gpu-operator \
   oci://ghcr.io/run-ai/fake-gpu-operator/fake-gpu-operator \
   --namespace gpu-operator \
-  --create-namespace
+  --create-namespace \
+  --set runtimeClass.enabled=false
 ```
 
 ---
