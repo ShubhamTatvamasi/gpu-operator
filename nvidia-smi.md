@@ -22,7 +22,7 @@ EOF
 ```
 
 ```
-kubectl -n default exec -it gpu-test -- nvidia-smi
+kubectl -n default exec gpu-test -- nvidia-smi
 ```
 
 Clean up when done:
