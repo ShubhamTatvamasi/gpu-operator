@@ -7,6 +7,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: gpu-test
+  namespace: default
 spec:
   containers:
   - name: gpu-test
@@ -19,10 +20,10 @@ EOF
 ```
 
 ```
-kubectl exec -it gpu-test -- nvidia-smi
+kubectl -n default exec -it gpu-test -- nvidia-smi
 ```
 
 Clean up when done:
 ```
-kubectl delete pod gpu-test
+kubectl -n default delete pod gpu-test
 ```
