@@ -11,7 +11,7 @@ metadata:
 spec:
   containers:
   - name: gpu-test
-    image: nvidia/cuda:13.3.1-base-ubuntu26.04
+    image: nvidia/cuda:13.4.1-base-ubuntu26.04
     command: ["sleep", "infinity"]
     resources:
       limits:
