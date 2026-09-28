@@ -1,5 +1,7 @@
 # nvidia-smi
 
+https://hub.docker.com/r/nvidia/cuda
+
 Deploy a pod requesting 1 GPU and keep it running so you can exec into it and run `nvidia-smi`:
 ```
 kubectl apply -f - << EOF
