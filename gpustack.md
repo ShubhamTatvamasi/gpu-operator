@@ -10,3 +10,19 @@ helm upgrade -i gpustack \
   --set worker.enabled=true
 ```
 
+
+---
+
+Cleanup
+
+```bash
+helm un gpustack -n gpustack-system
+```
+
+```
+kubectl delete ns gpustack-system
+```
+
+```bash
+kubectl delete apiservice v1.gpustack.ai v1.worker.gpustack.ai v1beta1.visibility.kueue.x-k8s.io v1beta2.visibility.kueue.x-k8s.io
+```
