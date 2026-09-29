@@ -7,7 +7,6 @@ helm upgrade -i gpustack \
   --namespace gpustack-system \
   --create-namespace \
   --set higress-core.gateway.replicas=1 \
-  --set worker.enabled=true \
-  --set 'worker.gpuVendors={nvidia}'
+  --set worker.enabled=true
 ```
 
