@@ -10,6 +10,10 @@ helm upgrade -i gpustack \
   --set worker.enabled=true
 ```
 
+Get `admin` password:
+```bash
+kubectl exec gpustack-server-0 -n gpustack-system -- cat /var/lib/gpustack/initial_admin_password
+```
 
 ---
 
