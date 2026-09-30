@@ -36,3 +36,15 @@ kubectl delete apiservice \
 kubectl delete ns gpustack-system
 ```
 
+---
+
+
+```bash
+ssh root@162.243.96.72 'ln -sfn core-7.14/lib /opt/rocm/lib && ls -l /opt/rocm/lib'
+```
+
+```bash
+kubectl --context=amd-droplet -n gpustack-system delete pod -l app.kubernetes.io/component=device-manager
+```
+
+
