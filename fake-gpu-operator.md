@@ -2,6 +2,8 @@
 
 https://github.com/run-ai/fake-gpu-operator
 
+https://docs.nvidia.com/nvcf/compute-plane/fake-gpu-operator
+
 Deploy `fake-gpu-operator`:
 ```bash
 helm upgrade -i fake-gpu-operator \
