@@ -1,5 +1,8 @@
 driver:
-  enabled: false
+  enabled: true
+  repository: docker.io/shubhamtatvamasi
+  image: driver
+  version: "595.91.07"
 
 toolkit:
   enabled: true
