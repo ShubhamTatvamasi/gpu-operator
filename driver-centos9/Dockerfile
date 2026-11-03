@@ -17,7 +17,7 @@ ARG KOJI=https://kojihub.stream.centos.org/kojifiles/packages/kernel/5.14.0
 RUN dnf install -y createrepo_c \
  && mkdir -p /opt/stream-kernels && cd /opt/stream-kernels \
  && for r in ${KERNELS}; do \
-      for p in kernel kernel-core kernel-modules-core kernel-devel kernel-headers; do \
+      for p in kernel kernel-core kernel-modules kernel-modules-core kernel-devel kernel-headers; do \
         curl -fsSLO ${KOJI}/${r}/x86_64/${p}-5.14.0-${r}.x86_64.rpm; \
       done; \
     done \

@@ -3,6 +3,7 @@ driver:
   repository: docker.io/shubhamtatvamasi
   image: driver
   version: "595.91.07"
+  imagePullPolicy: Always
 
 toolkit:
   enabled: true
