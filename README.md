@@ -16,6 +16,15 @@ helm upgrade -i gpu-operator nvidia/gpu-operator \
   --create-namespace
 ```
 
+Deploy `gpu-operator` with custom values:
+```bash
+helm upgrade -i gpu-operator nvidia/gpu-operator \
+  --version v26.7.2 \
+  --namespace gpu-operator \
+  --create-namespace \
+  -f gpu-operator-values.yaml
+```
+
 Check the values:
 ```bash
 helm get values gpu-operator -n gpu-operator
