@@ -22,7 +22,8 @@ helm upgrade -i gpu-operator nvidia/gpu-operator \
   --version v26.7.2 \
   --namespace gpu-operator \
   --create-namespace \
-  -f gpu-operator-values.yaml
+  -f gpu-operator-values.yaml \
+  --reset-values
 ```
 
 Check the values:
