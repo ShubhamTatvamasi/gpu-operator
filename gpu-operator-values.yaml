@@ -10,20 +10,21 @@ toolkit:
 
 devicePlugin:
   config:
-    create: true
-    name: time-slicing-config
-    default: any
-    data:
-      any: |-
-        version: v1
-        flags:
-          migStrategy: none
-        sharing:
-          timeSlicing:
-            failRequestsGreaterThanOne: true
-            resources:
-              - name: nvidia.com/gpu
-                replicas: 4
+    create: false
+    # create: true
+    # name: time-slicing-config
+    # default: any
+    # data:
+    #   any: |-
+    #     version: v1
+    #     flags:
+    #       migStrategy: none
+    #     sharing:
+    #       timeSlicing:
+    #         failRequestsGreaterThanOne: true
+    #         resources:
+    #           - name: nvidia.com/gpu
+    #             replicas: 4
 
 dcgmExporter:
   serviceMonitor:
